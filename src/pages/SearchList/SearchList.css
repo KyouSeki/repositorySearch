@@ -1,0 +1,16 @@
+.content {
+  width: 768px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+.loadmore-list{
+  margin-top: 20px;
+  height: 700px;
+  overflow: auto;
+}
+.input-line{
+  display: flex;
+}
+.input-line .input-btn{
+  margin-left: 10px;
+}
