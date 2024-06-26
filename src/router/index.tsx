@@ -1,31 +1,25 @@
-import React, { Component } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
+import { createBrowserRouter, RouteObject } from "react-router-dom";
+import SerachList from "../pages/SerachList";
+import SearchRepositories from "../pages/SerachList/SearchRepositories";
+import IssuesList from "../pages/SerachList/IssuesList";
 
-import SearchList from "../pages/SearchList";
-
-const routeConfig = [
+const router = createBrowserRouter([
   {
     path: "/",
-    component: <SearchList />,
-  },
-];
+    element: <SerachList />,
+    children:[
+      {
+        index: true,
+        path: "repositories",
+        element: <SearchRepositories />,
+      },
+      {
+        path: "issues/:id",
+        element: <IssuesList />,
+      }
+    ]
+  }] as RouteObject []
+);
 
-class RoutesConfig extends Component {
-  render() {
-    return (
-      <Router>
-        <Routes>
-          {routeConfig.map((route) => (
-            <Route
-              path={route.path}
-              element={route.component}
-              key={route.path}
-            />
-          ))}
-        </Routes>
-      </Router>
-    );
-  }
-}
-
-export default RoutesConfig;
+export default router;

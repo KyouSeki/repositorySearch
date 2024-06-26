@@ -1,0 +1,9 @@
+.content {
+  width: 70vw;
+  min-width: 320px;
+  max-width: 768px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 3px 80px 1px rgba(25,63,196,0.15)
+}

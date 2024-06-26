@@ -1,7 +1,9 @@
 import React from 'react';
 import './App.css';
-import RoutesConfig from './router'
-import { ApolloClient, InMemoryCache, Reference, ApolloProvider } from '@apollo/client';
+import router from './router'
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { RouterProvider } from "react-router-dom";
+
 function App() {
   const client = new ApolloClient({
     uri: 'https://api.github.com/graphql',
@@ -12,9 +14,7 @@ function App() {
   });
   return (
     <ApolloProvider client={client}>
-      <div>
-        <RoutesConfig/>
-      </div>
+      <RouterProvider router={router}/>
     </ApolloProvider>
   );
 }

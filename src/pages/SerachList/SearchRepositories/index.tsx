@@ -1,20 +1,21 @@
-import React, {useEffect, useState, ChangeEvent, JSXElementConstructor} from 'react';
-import { Button, List, Skeleton, Input} from 'antd';
-import {useLazyQuery, useQuery, OperationVariables} from '@apollo/client';
-import { GET_LOCATIONS, GetTodoQuery, GetTodoVariables} from '@/interface/SearchList'
-import {FormItem} from '@/pages/SearchList/components/FormLine'
-import './SearchList.css';
+import React, {useEffect, useState, ChangeEvent} from 'react';
+import { Button, List, Skeleton} from 'antd';
+import { Link } from 'react-router-dom';
+import {useLazyQuery } from '@apollo/client';
+import { GetRepositoryQuery, GetRepositoryVariables, Repository} from '@/interface/SearchRepositories'
+import {FormItem} from '@/pages/SerachList/components/FormLine'
+import { GET_REPOSITORY_BY_QUERY } from '@/api'
+import './SearchRepositories.css';
 
-function SearchList() {
+function SearchRepositories(): React.ReactElement {
   const [nodes, setNodes] = useState<any>([])
-  const [query, setQuery] = useState<GetTodoVariables>({name:'', after:''})
+  const [query, setQuery] = useState<GetRepositoryVariables>({name:'', after:''})
   const [hasNextPage, setHasNextPage] = useState<boolean>(true)
   const count: number = 10
   const [getRepository,
-    {fetchMore, refetch, loading, error, data} ] = useLazyQuery<GetTodoQuery, GetTodoVariables>(GET_LOCATIONS);
+    {fetchMore, loading, error, data} ] = useLazyQuery<GetRepositoryQuery, GetRepositoryVariables>(GET_REPOSITORY_BY_QUERY);
 
   const getDatas = () =>{
-    console.log('初始化加载')
     getRepository({ variables: {name:query.name, first: count} })
   }
 
@@ -41,11 +42,11 @@ function SearchList() {
     console.log('加载更多', query)
     if (!data || !data.search) return;
     setNodes(
-      [...nodes, ...Array.from({ length: count }, () => ({ loading: true, name: {}, picture: {} }))]
+      [...nodes, ...Array.from({ length: count }, () => ({ loading: true }))]
     );
     fetchMore({
       variables: { name: query.name, after: query.after, first: count},
-      updateQuery: (prev: GetTodoQuery, {fetchMoreResult}: any): GetTodoQuery => {
+      updateQuery: (prev: GetRepositoryQuery, {fetchMoreResult}: any): GetRepositoryQuery => {
         if (!fetchMoreResult) return prev;
         return {
           search: {...fetchMoreResult.search, nodes:[...nodes, ...fetchMoreResult.search.nodes]}
@@ -55,7 +56,7 @@ function SearchList() {
   }
   if (error) return <p>Error : {error.message}</p>;
   // 加载更多组件
-  const loadMore =
+  const loadMore: React.ReactElement | null =
     !loading && nodes.length > 0 && hasNextPage? (
       <div
         style={{
@@ -70,21 +71,23 @@ function SearchList() {
     ) : null;
 
   return (
-    <div className='content'>
+    <div>
       <FormItem query={query} textChangeCallback={textChange} getDatas={getDatas} resetData={resetData}/>
-      <Button className='input-btn' type="primary" onClick={getDatas}>search</Button>
       <List
         className="loadmore-list"
         loading={loading}
         itemLayout="horizontal"
         loadMore={loadMore}
-        dataSource={nodes ? nodes as Array<{name: string; url: string; loading?:boolean}>  : []}
+        dataSource={nodes ? nodes as Array<Repository> : []}
         renderItem={item => (
           <List.Item
-            actions={[<a key="list-loadmore-edit">edit</a>, <a key="list-loadmore-more">more</a>]}
+            actions={[<a key="list-loadmore-more" href={item.url} target="_blank">more</a>]}
           >
-            <Skeleton avatar title={false} loading={item.loading} active>
-              <div>{item.name}</div>
+            <Skeleton title={false} loading={item.loading} active>
+              <List.Item.Meta
+                title={<Link to={"/issues/" + item.id} className="list-title">{item.name}</Link>}
+                description={item.description}
+              />
             </Skeleton>
           </List.Item>
         )}
@@ -93,4 +96,4 @@ function SearchList() {
   )
 }
 
-export default SearchList;
+export default SearchRepositories;

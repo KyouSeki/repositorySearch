@@ -1,6 +1,6 @@
-import React, {ChangeEvent} from 'react'
+import React from 'react'
 import {Button, Input} from 'antd'
-import {FormLineProps} from '@/interface/SearchList'
+import {FormLineProps} from '@/interface/SearchRepositories'
 
 export const FormItem = (props: FormLineProps):React.ReactElement =>{
   const { query, textChangeCallback, getDatas, resetData} = props
