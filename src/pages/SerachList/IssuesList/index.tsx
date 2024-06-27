@@ -1,9 +1,10 @@
-import React, {useEffect, useState, ChangeEvent} from 'react';
-import { Button, List, Skeleton, Avatar} from 'antd';
-import {Link, useParams, useNavigate} from "react-router-dom";
-import {useLazyQuery, useQuery, OperationVariables} from '@apollo/client';
-import {GetIssuesQuery, GetIssuesVariables, Issues} from '@/interface/IssuesList'
+import React, {useEffect, useState } from 'react';
+import { Button, List, Skeleton, Avatar } from 'antd';
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery } from '@apollo/client';
+import { GetIssuesQuery, GetIssuesVariables, Issues} from '@/interface/IssuesList'
 import { GET_ISSUES_BY_REPOSITORY_ID } from '@/api'
+import { LoadMore } from '@/pages/SerachList/components/LoadMore'
 
 function IssuesList (): React.ReactElement {
   const navigate = useNavigate()
@@ -15,9 +16,9 @@ function IssuesList (): React.ReactElement {
   const {fetchMore, loading, error, data}  = useQuery<GetIssuesQuery, GetIssuesVariables>(GET_ISSUES_BY_REPOSITORY_ID, {
     variables: {repositoryId: params.id, first: count},
   });
+
   useEffect(()=>{
     if(data){
-      console.log('datadatadatadata', data)
       setNodes(data.node.issues.nodes)
       setHasNextPage (data.node.issues.pageInfo.hasNextPage)
       setAfter(data.node.issues.pageInfo?.endCursor)
@@ -25,9 +26,9 @@ function IssuesList (): React.ReactElement {
   },[data])
 
   if (error) return <p>Error : {error.message}</p>;
+
   const loadMoreFetch = ():void => {
-    //纷纷但是
-    if (!data || !data.node.issues) return;
+    if (!data || !data.node|| !data.node.issues) return;
     setNodes(
       [...nodes, ...Array.from({ length: count }, () => ({ loading: true }))]
     );
@@ -35,8 +36,6 @@ function IssuesList (): React.ReactElement {
       variables: {repositoryId: params.id, after, first: count},
       updateQuery: (prev: GetIssuesQuery, {fetchMoreResult}: any): any => {
         if (!fetchMoreResult) return prev;
-        console.log('prev', prev)
-        console.log('fetchMoreResult', {...fetchMoreResult.node})
         return {
           node: {
             ...fetchMoreResult.node,
@@ -50,23 +49,14 @@ function IssuesList (): React.ReactElement {
   // 加载更多组件
   const loadMore: React.ReactElement | null =
     !loading && nodes.length > 0 && hasNextPage? (
-      <div
-        style={{
-          textAlign: 'center',
-          marginTop: 12,
-          height: 32,
-          lineHeight: '32px',
-        }}
-      >
-        <Button onClick={loadMoreFetch}>loading more</Button>
-      </div>
+      <LoadMore loadMoreFetchCallback={loadMoreFetch}/>
     ) : null;
-  console.log('nodes', nodes)
+
   return(
     <div>
-      <Button onClick={()=>{navigate(-1)}}> 返回</Button>
+      <Button onClick={()=>{navigate(-1)}}>back</Button>
       <List
-        className="loadmore-list"
+        className="load-more-list"
         loading={loading}
         itemLayout="horizontal"
         loadMore={loadMore}

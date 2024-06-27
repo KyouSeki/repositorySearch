@@ -14,6 +14,7 @@
     "antd": "^5.18.3",
     "graphql": "^16.9.0",
     "react": "^18.3.1",
+    "react-activation": "^0.12.4",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1",
     "react-scripts": "5.0.1",
@@ -28,8 +29,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {

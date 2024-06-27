@@ -7,3 +7,26 @@
   border-radius: 12px;
   box-shadow: 0px 3px 80px 1px rgba(25,63,196,0.15)
 }
+.input-line{
+  display: flex;
+}
+.input-line .input-btn{
+  margin-left: 10px;
+}
+.list-title{
+  cursor: pointer;
+}
+.load-more-list{
+  margin-top: 20px;
+  min-height: 180px;
+  max-height: 700px;
+  overflow-y: auto;
+}
+.history-popover {
+  width: 70vw;
+}
+.history-tag{
+  cursor: pointer;
+  margin: 5px;
+}
+

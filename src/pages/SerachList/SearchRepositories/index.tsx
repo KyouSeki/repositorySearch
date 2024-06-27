@@ -1,11 +1,11 @@
-import React, {useEffect, useState, ChangeEvent} from 'react';
-import { Button, List, Skeleton} from 'antd';
+import React, { useEffect, useState, ChangeEvent } from 'react';
+import { List, Skeleton } from 'antd';
 import { Link } from 'react-router-dom';
-import {useLazyQuery } from '@apollo/client';
-import { GetRepositoryQuery, GetRepositoryVariables, Repository} from '@/interface/SearchRepositories'
-import {FormItem} from '@/pages/SerachList/components/FormLine'
+import { useLazyQuery } from '@apollo/client';
+import { GetRepositoryQuery, GetRepositoryVariables, Repository } from '@/interface/SearchRepositories'
+import { FormItem } from '@/pages/SerachList/components/FormLine'
+import { LoadMore } from '@/pages/SerachList/components/LoadMore'
 import { GET_REPOSITORY_BY_QUERY } from '@/api'
-import './SearchRepositories.css';
 
 function SearchRepositories(): React.ReactElement {
   const [nodes, setNodes] = useState<any>([])
@@ -15,17 +15,7 @@ function SearchRepositories(): React.ReactElement {
   const [getRepository,
     {fetchMore, loading, error, data} ] = useLazyQuery<GetRepositoryQuery, GetRepositoryVariables>(GET_REPOSITORY_BY_QUERY);
 
-  const getDatas = () =>{
-    getRepository({ variables: {name:query.name, first: count} })
-  }
-
-  const resetData = () => {
-    // setNodes([])
-    setQuery({name:'', after:''})
-    // refetch({name:'', first: count})
-  }
   useEffect(()=>{
-    console.log('data', data)
     if(data){
       setNodes(data.search.nodes)
       setHasNextPage (data.search.pageInfo.hasNextPage)
@@ -33,13 +23,26 @@ function SearchRepositories(): React.ReactElement {
     }
   },[data])
 
+  if (error) return <p>Error : {error.message}</p>;
+
+  const getDatas = (name?:string) =>{
+    if(name){
+      setQuery({...query, name: name})
+      getRepository({ variables: {name:name, first: count}})
+    }else{
+      getRepository({ variables: {name:query.name, first: count}})
+    }
+  }
+
+  const resetData = () => {
+    setQuery({name:'', after:''})
+  }
+
   const textChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery({...query, name:event.target.value});
   };
 
   const loadMoreFetch = ():void => {
-    //纷纷但是
-    console.log('加载更多', query)
     if (!data || !data.search) return;
     setNodes(
       [...nodes, ...Array.from({ length: count }, () => ({ loading: true }))]
@@ -54,27 +57,17 @@ function SearchRepositories(): React.ReactElement {
       },
     })
   }
-  if (error) return <p>Error : {error.message}</p>;
   // 加载更多组件
   const loadMore: React.ReactElement | null =
     !loading && nodes.length > 0 && hasNextPage? (
-      <div
-        style={{
-          textAlign: 'center',
-          marginTop: 12,
-          height: 32,
-          lineHeight: '32px',
-        }}
-      >
-        <Button onClick={loadMoreFetch}>loading more</Button>
-      </div>
+      <LoadMore loadMoreFetchCallback={loadMoreFetch}/>
     ) : null;
 
   return (
     <div>
       <FormItem query={query} textChangeCallback={textChange} getDatas={getDatas} resetData={resetData}/>
       <List
-        className="loadmore-list"
+        className="load-more-list"
         loading={loading}
         itemLayout="horizontal"
         loadMore={loadMore}

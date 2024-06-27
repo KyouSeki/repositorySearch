@@ -11,6 +11,7 @@ export interface Issues {
   publishedAt: string
 }
 
+// 定义返回值类型
 export interface GetIssuesQuery {
   node: {
     issues: {
@@ -23,7 +24,7 @@ export interface GetIssuesQuery {
   };
 };
 
-// 定义变量类型
+// 定义参数类型
 export interface GetIssuesVariables {
   repositoryId: string | undefined,
   first?: number,

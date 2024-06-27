@@ -32,3 +32,15 @@
     transform: rotate(360deg);
   }
 }
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track-piece {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #68a3f8;
+  border-radius: 4px;
+}

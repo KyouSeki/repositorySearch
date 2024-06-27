@@ -1,6 +1,6 @@
-import {gql} from '@apollo/client'
+import {DocumentNode, gql} from '@apollo/client'
 
-export const GET_REPOSITORY_BY_QUERY = gql`
+export const GET_REPOSITORY_BY_QUERY: DocumentNode = gql`
     query getRepository($name: String!, $first: Int!, $after: String){
       search(type: REPOSITORY, first: $first, query: $name, after: $after) {
         repositoryCount
@@ -20,7 +20,7 @@ export const GET_REPOSITORY_BY_QUERY = gql`
     }
   `
 
-export const GET_ISSUES_BY_REPOSITORY_ID = gql`
+export const GET_ISSUES_BY_REPOSITORY_ID: DocumentNode  = gql`
   query GetIssuesByRepositoryId($repositoryId: ID!, $first: Int!, $after: String) {
     node(id: $repositoryId) {
       ... on Repository {
