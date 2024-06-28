@@ -15,6 +15,7 @@ export interface Issues {
 // 定义返回值类型
 export interface GetIssuesQuery {
   node: {
+    name: string,
     issues: {
       pageInfo: {
         hasNextPage: boolean,

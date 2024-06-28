@@ -3,7 +3,7 @@ import {Button, Input, Popover, Tag, Popconfirm} from "antd"
 import {GetRepositoryVariables} from "@/interface/SearchRepositories"
 
 interface FormLineProps {
-  query: GetRepositoryVariables,
+  inputValue: string,
   textSetCallback: (event: ChangeEvent<HTMLInputElement>)=>void,
   getDatas: (name?: string)=>void,
   resetData: ()=>void,
@@ -12,7 +12,7 @@ interface FormLineProps {
 export const FormItem = (props: FormLineProps): React.ReactElement =>{
   const history: string | null =  localStorage.getItem("history")
   const [ historyList, setHistoryList ] = useState<string[]>(history ? JSON.parse(history) : [])
-  const { query, textSetCallback, getDatas, resetData} = props
+  const { inputValue, textSetCallback, getDatas, resetData} = props
   const historyCount: Number = 20
 
   useEffect(()=>{
@@ -20,7 +20,7 @@ export const FormItem = (props: FormLineProps): React.ReactElement =>{
   }, [historyList])
 
   const getHistoryData = (): void => {
-    const name = query.name as string
+    const name = inputValue as string
     let list: string[] = historyList
     if(list.length < historyCount) {
       list.push(name)
@@ -31,7 +31,7 @@ export const FormItem = (props: FormLineProps): React.ReactElement =>{
     setHistoryList(Array.from(new Set(list)))
   }
   const submit = () =>{
-    if(query.name){
+    if(inputValue){
       getHistoryData()
     }
     getDatas()
@@ -59,7 +59,7 @@ export const FormItem = (props: FormLineProps): React.ReactElement =>{
           {
             historyList.length > 0 ?
             historyList.map( item => {
-              return (<Tag className="history-tag" closable onClick={onChangeTag} onClose={()=>{closeTag(item)}} key={item}>
+              return (<Tag color="blue" className="history-tag" closable onClick={onChangeTag} onClose={()=>{closeTag(item)}} key={item}>
                 <span className="history-tag-text">{item}</span>
               </Tag>)
             }) : <div>No Data</div>
@@ -85,7 +85,7 @@ export const FormItem = (props: FormLineProps): React.ReactElement =>{
 
   const SearchInput = () => {
     return(
-      <Input placeholder="Please enter text" value={query.name}
+      <Input placeholder="Please enter text" value={inputValue}
              onPressEnter={submit} onChange={textSetCallback}/>
     )
   }

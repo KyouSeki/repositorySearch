@@ -21,6 +21,7 @@
   min-height: 180px;
   max-height: 700px;
   overflow-y: auto;
+  border-top: 1px solid rgba(5, 5, 5, 0.06);
 }
 .history-popover {
   width: 70vw;
@@ -32,8 +33,11 @@
 .history-tag-text{
   padding-right: 3px;
 }
-.option-text{
+.flex-between-box{
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.repository-name{
+  margin-top: 20px;
 }

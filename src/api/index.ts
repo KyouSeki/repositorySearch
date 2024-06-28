@@ -24,6 +24,7 @@ export const GET_ISSUES_BY_REPOSITORY_ID: DocumentNode  = gql`
   query GetIssuesByRepositoryId($repositoryId: ID!, $first: Int!, $after: String) {
     node(id: $repositoryId) {
       ... on Repository {
+        name
         issues(first: $first, after: $after, orderBy: {field: CREATED_AT, direction: DESC}) {
           nodes {
             id

@@ -69,9 +69,12 @@ function IssuesList (): React.ReactElement {
 
   return (
     <div>
-      <Button onClick={() => {
-        navigate(-1)
-      }}>back</Button>
+      <div className="flex-between-box">
+        <div>{data?.node.name}</div>
+        <Button onClick={() => {
+          navigate(-1)
+        }}>back</Button>
+      </div>
       <List
         className="load-more-list"
         loading={loading}

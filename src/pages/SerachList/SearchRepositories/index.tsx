@@ -10,11 +10,13 @@ import { GET_REPOSITORY_BY_QUERY } from "@/api"
 function SearchRepositories(): React.ReactElement {
   const [nodes, setNodes] = useState<any>([])
   const [query, setQuery] = useState<GetRepositoryVariables>({name:"", after:""})
+  const [inputValue, setInputValue] = useState<string>("")
   const [hasNextPage, setHasNextPage] = useState<boolean>(true)
   const count: number = 10
   const [getRepository,
     {fetchMore, loading, error, data} ] = useLazyQuery<GetRepositoryQuery, GetRepositoryVariables>(GET_REPOSITORY_BY_QUERY);
 
+  // dataをイベントリスナーでデータを受け取る
   useEffect(()=>{
     if(data){
       setNodes(data.search.nodes)
@@ -23,23 +25,35 @@ function SearchRepositories(): React.ReactElement {
     }
   },[data])
 
-  if (error) return <p>Error : {error.message}</p>;
+  // query.nameをイベントリスナーでgetRepositoryに渡す
+  useEffect(() => {
+    getRepository({ variables: {name:query.name, first: count}})
+  }, [query.name]);
 
+  /**
+   * 検索ボタンを押した時に呼ばれる関数
+   * @param name 検索したい名前
+   * @description 検索したい名前を受け取り、getRepositoryに渡す
+   * */
   const getDatas = (name?:string) =>{
     if(name){
+      setInputValue(name)
       setQuery({...query, name: name})
-      getRepository({ variables: {name:name, first: count}})
     }else{
-      getRepository({ variables: {name:query.name, first: count}})
+      setQuery({...query, name: inputValue})
     }
   }
 
+  /**
+   * resetボタンを押した時に呼ばれる関数
+   * @description 入力したデータを削除する
+   * */
   const resetData = () => {
-    setQuery({name:"", after:""})
+    setInputValue("");
   }
 
   const textSet = (event: ChangeEvent<HTMLInputElement>):void => {
-    setQuery({...query, name: event.target.value});
+    setInputValue(event.target.value);
   }
 
   const loadMoreFetch = ():void => {
@@ -63,9 +77,11 @@ function SearchRepositories(): React.ReactElement {
       <LoadMore loadMoreFetchCallback={loadMoreFetch}/>
     ) : null;
 
+  if (error) return <p>Error : {error.message}</p>;
+
   return (
     <div>
-      <FormItem query={query} textSetCallback={textSet} getDatas={getDatas} resetData={resetData}/>
+      <FormItem inputValue={inputValue} textSetCallback={textSet} getDatas={getDatas} resetData={resetData}/>
       <List
         className="load-more-list"
         loading={loading}
