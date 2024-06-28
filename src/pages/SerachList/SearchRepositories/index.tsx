@@ -1,15 +1,15 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
-import { List, Skeleton } from 'antd';
-import { Link } from 'react-router-dom';
-import { useLazyQuery } from '@apollo/client';
-import { GetRepositoryQuery, GetRepositoryVariables, Repository } from '@/interface/SearchRepositories'
-import { FormItem } from '@/pages/SerachList/components/FormLine'
-import { LoadMore } from '@/pages/SerachList/components/LoadMore'
-import { GET_REPOSITORY_BY_QUERY } from '@/api'
+import React, { useEffect, useState, ChangeEvent } from "react";
+import { List, Skeleton } from "antd";
+import { Link } from "react-router-dom";
+import { useLazyQuery } from "@apollo/client";
+import { GetRepositoryQuery, GetRepositoryVariables, Repository } from "@/interface/SearchRepositories"
+import { FormItem } from "@/pages/SerachList/components/FormLine"
+import { LoadMore } from "@/pages/SerachList/components/LoadMore"
+import { GET_REPOSITORY_BY_QUERY } from "@/api"
 
 function SearchRepositories(): React.ReactElement {
   const [nodes, setNodes] = useState<any>([])
-  const [query, setQuery] = useState<GetRepositoryVariables>({name:'', after:''})
+  const [query, setQuery] = useState<GetRepositoryVariables>({name:"", after:""})
   const [hasNextPage, setHasNextPage] = useState<boolean>(true)
   const count: number = 10
   const [getRepository,
@@ -35,12 +35,12 @@ function SearchRepositories(): React.ReactElement {
   }
 
   const resetData = () => {
-    setQuery({name:'', after:''})
+    setQuery({name:"", after:""})
   }
 
-  const textChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setQuery({...query, name:event.target.value});
-  };
+  const textSet = (event: ChangeEvent<HTMLInputElement>):void => {
+    setQuery({...query, name: event.target.value});
+  }
 
   const loadMoreFetch = ():void => {
     if (!data || !data.search) return;
@@ -65,7 +65,7 @@ function SearchRepositories(): React.ReactElement {
 
   return (
     <div>
-      <FormItem query={query} textChangeCallback={textChange} getDatas={getDatas} resetData={resetData}/>
+      <FormItem query={query} textSetCallback={textSet} getDatas={getDatas} resetData={resetData}/>
       <List
         className="load-more-list"
         loading={loading}

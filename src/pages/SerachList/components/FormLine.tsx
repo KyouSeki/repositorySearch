@@ -1,27 +1,28 @@
-import React, {ChangeEvent, useEffect, useState} from 'react'
-import {Button, Input, Popover, Tag, Popconfirm} from 'antd'
-import {GetRepositoryVariables} from '@/interface/SearchRepositories'
+import React, {ChangeEvent, useEffect, useState} from "react"
+import {Button, Input, Popover, Tag, Popconfirm} from "antd"
+import {GetRepositoryVariables} from "@/interface/SearchRepositories"
 
 interface FormLineProps {
   query: GetRepositoryVariables,
-  textChangeCallback: (event: ChangeEvent<HTMLInputElement>)=>void,
+  textSetCallback: (event: ChangeEvent<HTMLInputElement>)=>void,
   getDatas: (name?: string)=>void,
   resetData: ()=>void,
 }
 
 export const FormItem = (props: FormLineProps): React.ReactElement =>{
-  const history: string | null =  localStorage.getItem('history')
+  const history: string | null =  localStorage.getItem("history")
   const [ historyList, setHistoryList ] = useState<string[]>(history ? JSON.parse(history) : [])
-  const { query, textChangeCallback, getDatas, resetData} = props
+  const { query, textSetCallback, getDatas, resetData} = props
+  const historyCount: Number = 20
 
   useEffect(()=>{
-    localStorage.setItem('history', JSON.stringify(historyList))
+    localStorage.setItem("history", JSON.stringify(historyList))
   }, [historyList])
 
   const getHistoryData = (): void => {
     const name = query.name as string
-    let list: string[] = history ? JSON.parse(history): []
-    if(list.length < 10) {
+    let list: string[] = historyList
+    if(list.length < historyCount) {
       list.push(name)
     }else{
       list.shift()
@@ -35,17 +36,20 @@ export const FormItem = (props: FormLineProps): React.ReactElement =>{
     }
     getDatas()
   }
-  const closeTag = (e: any):void =>{
-    setHistoryList(historyList.filter(res=>{
-      return res !== e
-    }))
+
+  const onChangeTag = (e: React.MouseEvent<HTMLElement>): void => {
+    const targetElement = e.target as HTMLElement;
+    getDatas(targetElement.innerText)
   }
-  const removeTag = () :void=> {
+
+  const removeTag = (): void=> {
     setHistoryList([])
   }
 
-  const onChangeTag = (e: any) => {
-    getDatas(e.target.innerText)
+  const closeTag = (e: string): void =>{
+    setHistoryList(historyList.filter(res=>{
+      return res !== e
+    }))
   }
 
   const content = () => {
@@ -55,7 +59,9 @@ export const FormItem = (props: FormLineProps): React.ReactElement =>{
           {
             historyList.length > 0 ?
             historyList.map( item => {
-              return (<Tag className='history-tag' closable onClick={onChangeTag} onClose={()=>{closeTag(item)}} key={item}>{item}</Tag>)
+              return (<Tag className="history-tag" closable onClick={onChangeTag} onClose={()=>{closeTag(item)}} key={item}>
+                <span className="history-tag-text">{item}</span>
+              </Tag>)
             }) : <div>No Data</div>
           }
         </div>
@@ -77,18 +83,23 @@ export const FormItem = (props: FormLineProps): React.ReactElement =>{
     )
   }
 
+  const SearchInput = () => {
+    return(
+      <Input placeholder="Please enter text" value={query.name}
+             onPressEnter={submit} onChange={textSetCallback}/>
+    )
+  }
+
   return (
-    <div className='input-line'>
+    <div className="input-line">
       {historyList.length > 0 ?
-        <Popover overlayClassName='history-popover' placement="bottom" title='Search History' trigger="click"
-                 content={content}>
-          <Input placeholder="Please enter text" value={query.name}
-                 onChange={textChangeCallback}/>
+       <Popover overlayClassName="history-popover" placement="bottom" title="Search History"
+                trigger="click" content={content}>
+         {SearchInput()}
         </Popover>
-       : <Input placeholder="Please enter text" value={query.name}
-                 onChange={textChangeCallback}/>}
-      <Button className='input-btn' type="primary" onClick={submit}>search</Button>
-      <Button className='input-btn' onClick={resetData}>reset</Button>
+       : SearchInput()}
+      <Button className="input-btn" type="primary" onClick={submit}>search</Button>
+      <Button className="input-btn" onClick={resetData}>reset</Button>
     </div>
   )
 }

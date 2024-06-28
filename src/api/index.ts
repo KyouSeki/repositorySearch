@@ -1,4 +1,4 @@
-import {DocumentNode, gql} from '@apollo/client'
+import {DocumentNode, gql} from "@apollo/client"
 
 export const GET_REPOSITORY_BY_QUERY: DocumentNode = gql`
     query getRepository($name: String!, $first: Int!, $after: String){
@@ -24,7 +24,7 @@ export const GET_ISSUES_BY_REPOSITORY_ID: DocumentNode  = gql`
   query GetIssuesByRepositoryId($repositoryId: ID!, $first: Int!, $after: String) {
     node(id: $repositoryId) {
       ... on Repository {
-        issues(first: $first, after: $after) {
+        issues(first: $first, after: $after, orderBy: {field: CREATED_AT, direction: DESC}) {
           nodes {
             id
             title
@@ -33,7 +33,8 @@ export const GET_ISSUES_BY_REPOSITORY_ID: DocumentNode  = gql`
               login
               avatarUrl
             }
-            publishedAt
+            createdAt
+            state
           }
           pageInfo {
             endCursor

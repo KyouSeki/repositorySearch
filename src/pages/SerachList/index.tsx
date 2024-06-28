@@ -1,10 +1,10 @@
-import { Outlet } from 'react-router-dom';
-import React from 'react'
-import './SearchList.css';
+import { Outlet } from "react-router-dom";
+import React from "react"
+import "./SearchList.css";
 
 function SerachList (): React.ReactElement {
   return(
-    <div className='content'>
+    <div className="content">
       <Outlet/>
     </div>
   )

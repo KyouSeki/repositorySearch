@@ -27,6 +27,13 @@
 }
 .history-tag{
   cursor: pointer;
-  margin: 5px;
+  margin: 8px;
 }
-
+.history-tag-text{
+  padding-right: 3px;
+}
+.option-text{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

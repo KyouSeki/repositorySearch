@@ -8,7 +8,8 @@ export interface Issues {
     login: string
     avatarUrl: string
   },
-  publishedAt: string
+  createdAt: string
+  state: "OPEN" | "CLOSED"
 }
 
 // 定义返回值类型
