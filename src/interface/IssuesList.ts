@@ -22,11 +22,11 @@ export interface GetIssuesQuery {
       nodes: Issues[];
     }
   };
-};
+}
 
 // 定义参数类型
 export interface GetIssuesVariables {
   repositoryId: string | undefined,
   first?: number,
   after?: string
-};
+}
