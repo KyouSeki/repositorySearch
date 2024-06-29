@@ -61,7 +61,6 @@ npm start
  ├── .gitignore
  ├── config-overrides.js
  ├── package.json
- ├── package-lock.json
  ├── pnpm-lock.yaml
  │── tsconfig.json
  └── README.md
