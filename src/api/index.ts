@@ -10,6 +10,9 @@ export const GET_REPOSITORY_BY_QUERY: DocumentNode = gql`
             description
             url
             id
+            owner {
+              login
+            }
           }
         }
         pageInfo {

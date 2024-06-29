@@ -3,7 +3,6 @@ export interface Issues {
   url: string,
   description: string,
   id: string,
-  loading?: boolean,
   author?: {
     login: string
     avatarUrl: string
@@ -12,7 +11,6 @@ export interface Issues {
   state: "OPEN" | "CLOSED"
 }
 
-// 定义返回值类型
 export interface GetIssuesQuery {
   node: {
     name: string,
@@ -26,7 +24,6 @@ export interface GetIssuesQuery {
   };
 }
 
-// 定义参数类型
 export interface GetIssuesVariables {
   repositoryId: string | undefined,
   first?: number,

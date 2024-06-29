@@ -1,6 +1,11 @@
 import React from "react"
 import { Button } from "antd"
 
+/**
+ * LoadMore コンポーネント
+ * @param props.loadMoreFetchCallback ロードモートを呼び出すコールバック
+ * @returns React.ReactElement
+ * */
 export const LoadMore = (props: {loadMoreFetchCallback: ()=>void}):React.ReactElement =>{
   const { loadMoreFetchCallback } = props
   return (

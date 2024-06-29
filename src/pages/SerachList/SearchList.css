@@ -24,14 +24,25 @@
   border-top: 1px solid rgba(5, 5, 5, 0.06);
 }
 .history-popover {
-  width: 70vw;
+  width: 60vw;
+}
+.tags-box{
+  display: flex;
+  flex-flow: row wrap;
 }
 .history-tag{
   cursor: pointer;
   margin: 8px;
+  display: flex;
+  align-items: center;
 }
 .history-tag-text{
+  display: inline-block;
   padding-right: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
 }
 .flex-between-box{
   display: flex;

@@ -1,4 +1,3 @@
-import React from "react";
 import "./App.css";
 import router from "./router"
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";

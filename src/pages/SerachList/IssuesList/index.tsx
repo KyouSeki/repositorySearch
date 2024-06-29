@@ -4,20 +4,25 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GetIssuesQuery, GetIssuesVariables, Issues} from "@/interface/IssuesList"
 import { GET_ISSUES_BY_REPOSITORY_ID } from "@/api"
-import { LoadMore } from "@/pages/SerachList/components/LoadMore"
 import {CheckCircleOutlined, ClockCircleOutlined} from '@ant-design/icons'
+import { LoadMore } from "@/pages/SerachList/components/LoadMore"
 
+/**
+ * IssuesList コンポーネント
+ * @returns React.ReactElement
+ * */
 function IssuesList (): React.ReactElement {
   const navigate = useNavigate()
   const params = useParams()
   const count: number = 10
-  const [nodes, setNodes] = useState<any>([])
+  const [nodes, setNodes] = useState<Issues[]>([])
   const [hasNextPage, setHasNextPage] = useState<boolean>(true)
   const [after, setAfter] = useState<string>("")
   const {fetchMore, loading, error, data} = useQuery<GetIssuesQuery, GetIssuesVariables>(GET_ISSUES_BY_REPOSITORY_ID, {
     variables: {repositoryId: params.id, first: count},
   });
 
+  // dataをイベントリスナーでデータを受け取る
   useEffect(() => {
     if (data) {
       setNodes(data.node.issues.nodes)
@@ -26,16 +31,24 @@ function IssuesList (): React.ReactElement {
     }
   }, [data])
 
-  if (error) return <p>Error : {error.message}</p>;
-
+  /**
+   * loadMoreボタンを押した時に呼ばれる関数
+   * @description loadMoreボタンを押した時に、次ぺーじのデータを追加する
+   * */
   const loadMoreFetch = (): void => {
     if (!data || !data.node || !data.node.issues) return;
-    setNodes(
-      [...nodes, ...Array.from({length: count}, () => ({loading: true}))]
-    );
+
+    // Skeletonを表示するために、仮にデータを追加する
+    setNodes(prev  => {
+      return [
+        ...prev,
+        ...Array.from({length: count}, () => ({loading: true}))
+      ] as Issues[] & {loading: boolean}[]
+    })
+
     fetchMore({
       variables: {repositoryId: params.id, after, first: count},
-      updateQuery: (prev: GetIssuesQuery, {fetchMoreResult}: any): any => {
+      updateQuery: (prev: GetIssuesQuery, {fetchMoreResult}: {fetchMoreResult: GetIssuesQuery}): GetIssuesQuery => {
         if (!fetchMoreResult) return prev;
         return {
           node: {
@@ -47,12 +60,13 @@ function IssuesList (): React.ReactElement {
     })
   }
 
-  // 加载更多组件
+  // loadMoreの要素を生成する
   const loadMore: React.ReactElement | null =
     !loading && nodes.length > 0 && hasNextPage ? (
       <LoadMore loadMoreFetchCallback={loadMoreFetch}/>
     ) : null;
 
+  // タイトルの要素を生成する
   const TitleItem = (item: Issues): React.ReactElement => {
     return (
       <span>
@@ -67,6 +81,9 @@ function IssuesList (): React.ReactElement {
     )
   }
 
+  // エラー時の処理
+  if (error) return <p>Error : {error.message}</p>;
+
   return (
     <div>
       <div className="flex-between-box">
@@ -80,7 +97,7 @@ function IssuesList (): React.ReactElement {
         loading={loading}
         itemLayout="horizontal"
         loadMore={loadMore}
-        dataSource={nodes ? nodes as Array<Issues> : []}
+        dataSource={nodes ? nodes as Array<Issues & {loading: boolean}> : []}
         renderItem={item => (
           <List.Item
             actions={[<a key="list-loadmore-more" href={item.url} target="_blank">more</a>]}

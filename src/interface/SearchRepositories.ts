@@ -1,11 +1,11 @@
-// 定义查询类型
-
 export interface Repository {
   name: string,
   url: string,
   description: string,
   id: string,
-  loading?: boolean
+  owner: {
+    login: string,
+  }
 }
 
 export interface GetRepositoryQuery {
@@ -18,7 +18,6 @@ export interface GetRepositoryQuery {
   };
 }
 
-// 定义参数类型
 export interface GetRepositoryVariables {
   name: string | undefined,
   first?: number,
